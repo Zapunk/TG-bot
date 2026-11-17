@@ -1,0 +1,43 @@
+vagrant.configure("2") do |config|
+    config.vm.box = "bento/ubuntu-22.04"
+    config.vm.synced_folder ".", "/vagrant"
+
+    #----------------master----------------
+    config.vm.define "master" do |master|
+        master.vm.hostname = "master"
+        master.vm.network "private_network", ip: "192.168.56.10"
+        
+        master.vm.provider "virtualbox" do |vb|
+            vb.memory = 3072
+            vb.cpus = 2
+        end
+
+        master.vm.provision "shell", path: "scripts/install_k3s_master.sh"
+    end
+
+    # ---------------- WORKER 1 ----------------
+  config.vm.define "worker1" do |worker|
+    worker.vm.hostname = "worker1"
+    worker.vm.network "private_network", ip: "192.168.56.11"
+
+    worker.vm.provider "virtualbox" do |vb|
+      vb.memory = 2048
+      vb.cpus = 2
+    end
+
+    worker.vm.provision "shell", path: "scripts/install_k3s_worker1.sh"
+  end
+
+    # ---------------- WORKER 2 ----------------
+  config.vm.define "worker2" do |worker|
+    worker.vm.hostname = "worker2"
+    worker.vm.network "private_network", ip: "192.168.56.12"
+
+    worker.vm.provider "virtualbox" do |vb|
+      vb.memory = 2048
+      vb.cpus = 2
+    end
+
+    worker.vm.provision "shell", path: "scripts/install_k3s_worker2.sh"
+  end
+end  
